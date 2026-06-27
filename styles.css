@@ -1,53 +1,160 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
 body{
-
-    font-family: Arial;
-    max-width:900px;
-    margin:auto;
-    padding:30px;
-
+    font-family: Arial, Helvetica, sans-serif;
+    background:#f5f7fb;
+    color:#1e293b;
+    padding:40px;
 }
 
 h1{
+    font-size:2rem;
+    margin-bottom:30px;
+}
 
-    text-align:center;
-
+form,
+table,
+h2{
+    background:white;
+    border-radius:16px;
+    box-shadow:0 4px 12px rgba(0,0,0,.05);
 }
 
 form{
-
     display:grid;
-    grid-template-columns:repeat(5,1fr);
-    gap:10px;
-    margin-bottom:20px;
+    grid-template-columns:
+    repeat(auto-fit,minmax(180px,1fr));
+    gap:20px;
 
+    padding:30px;
+    margin-bottom:30px;
 }
 
 input,
-select,
-button{
+select{
 
-    padding:10px;
+    width:100%;
+    padding:14px;
+
+    border:1px solid #dbe4ee;
+    border-radius:10px;
+
+    font-size:16px;
+
+    transition:.2s;
+
+    background:white;
 
 }
+
+input:focus,
+select:focus{
+
+    outline:none;
+    border-color:#22c55e;
+
+}
+
+button{
+
+    background:#16a34a;
+    color:white;
+
+    border:none;
+
+    border-radius:10px;
+
+    padding:14px;
+
+    cursor:pointer;
+
+    font-size:16px;
+
+    transition:.2s;
+
+}
+
+button:hover{
+
+    background:#15803d;
+
+}
+
+h2{
+
+    padding:25px;
+
+    margin-bottom:30px;
+
+    font-size:28px;
+
+}
+
+#total{
+
+    color:#16a34a;
+    font-weight:bold;
+
+}
+
+/* ---------- Table ---------- */
 
 table{
 
     width:100%;
+
     border-collapse:collapse;
 
+    overflow:hidden;
+
 }
 
-th,
+th{
+
+    background:#f8fafc;
+
+    color:#64748b;
+
+    text-align:left;
+
+    padding:18px;
+
+    font-size:14px;
+
+    letter-spacing:1px;
+
+}
+
 td{
 
-    border:1px solid gray;
-    padding:10px;
-    text-align:center;
+    padding:18px;
+
+    border-top:1px solid #edf2f7;
 
 }
 
-button{
+tr:hover{
 
-    cursor:pointer;
+    background:#f8fafc;
+
+}
+
+td button{
+
+    background:#ef4444;
+
+    padding:8px 12px;
+
+    border-radius:8px;
+
+}
+
+td button:hover{
+
+    background:#dc2626;
 
 }
