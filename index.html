@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>529 Expense Tracker</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<h1>529 Expense Tracker</h1>
+
+<form id="expenseForm">
+
+    <input
+        type="date"
+        id="date"
+        required>
+
+    <select id="category">
+
+        <option>Books</option>
+        <option>Tuition</option>
+        <option>Housing</option>
+        <option>Supplies</option>
+        <option>Other</option>
+
+    </select>
+
+    <input
+        type="text"
+        id="description"
+        placeholder="Description"
+        required>
+
+    <input
+        type="number"
+        id="amount"
+        placeholder="Amount"
+        step="0.01"
+        required>
+
+    <button>Add Expense</button>
+
+</form>
+
+<h2>Total:
+<span id="total">$0.00</span>
+</h2>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Date</th>
+<th>Category</th>
+<th>Description</th>
+<th>Amount</th>
+<th>Delete</th>
+
+</tr>
+
+</thead>
+
+<tbody id="expenseTable">
+
+</tbody>
+
+</table>
+
+<script src="script.js"></script>
+
+</body>
+
+</html>

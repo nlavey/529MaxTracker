@@ -1,0 +1,53 @@
+body{
+
+    font-family: Arial;
+    max-width:900px;
+    margin:auto;
+    padding:30px;
+
+}
+
+h1{
+
+    text-align:center;
+
+}
+
+form{
+
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:10px;
+    margin-bottom:20px;
+
+}
+
+input,
+select,
+button{
+
+    padding:10px;
+
+}
+
+table{
+
+    width:100%;
+    border-collapse:collapse;
+
+}
+
+th,
+td{
+
+    border:1px solid gray;
+    padding:10px;
+    text-align:center;
+
+}
+
+button{
+
+    cursor:pointer;
+
+}
