@@ -6,6 +6,8 @@ const total = document.getElementById("total");
 
 const submitButton = document.getElementById("submitButton");
 
+const sortOption = document.getElementById("sortOption");
+
 let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
 
 let editingIndex = -1;
@@ -63,6 +65,11 @@ form.addEventListener("submit", function(event){
 
 });
 
+sortOption.addEventListener(
+    "change",
+    displayExpenses
+);
+
 function displayExpenses(){
 
     table.innerHTML = "";
@@ -75,9 +82,11 @@ function displayExpenses(){
     const selectedCategory =
     filterCategory.value;
 
-    for(let i = 0; i < expenses.length; i++){
+    // Copy the array
+    let filteredExpenses = [...expenses];
 
-        const expense = expenses[i];
+    // Search
+    filteredExpenses = filteredExpenses.filter(function(expense){
 
         const matchesSearch =
         expense.description
@@ -86,47 +95,103 @@ function displayExpenses(){
 
         const matchesCategory =
 
-        selectedCategory === "All" ||
+        selectedCategory === "All"
+
+        ||
 
         expense.category === selectedCategory;
 
-        if(matchesSearch && matchesCategory){
+        return matchesSearch &&
+               matchesCategory;
 
-            sum += expense.amount;
+    });
 
-            table.innerHTML += `
+    // Sorting
 
-            <tr>
+    switch(sortOption.value){
 
-                <td>${expense.date}</td>
+        case "dateNewest":
 
-                <td>${expense.category}</td>
+            filteredExpenses.sort(function(a,b){
 
-                <td>${expense.description}</td>
+                return new Date(b.date)
+                     - new Date(a.date);
 
-                <td>$${expense.amount.toFixed(2)}</td>
+            });
 
-                <td>
+            break;
 
-                    <button onclick="editExpense(${i})">
+        case "dateOldest":
 
-                        Edit
+            filteredExpenses.sort(function(a,b){
 
-                    </button>
+                return new Date(a.date)
+                     - new Date(b.date);
 
-                    <button onclick="deleteExpense(${i})">
+            });
 
-                        Delete
+            break;
 
-                    </button>
+        case "amountHigh":
 
-                </td>
+            filteredExpenses.sort(function(a,b){
 
-            </tr>
+                return b.amount-a.amount;
 
-            `;
+            });
 
-        }
+            break;
+
+        case "amountLow":
+
+            filteredExpenses.sort(function(a,b){
+
+                return a.amount-b.amount;
+
+            });
+
+            break;
+
+    }
+
+    for(const expense of filteredExpenses){
+
+        sum += expense.amount;
+
+        const originalIndex =
+        expenses.indexOf(expense);
+
+        table.innerHTML += `
+
+        <tr>
+
+            <td>${expense.date}</td>
+
+            <td>${expense.category}</td>
+
+            <td>${expense.description}</td>
+
+            <td>$${expense.amount.toFixed(2)}</td>
+
+            <td>
+
+                <button onclick="editExpense(${originalIndex})">
+
+                    Edit
+
+                </button>
+
+                <button onclick="deleteExpense(${originalIndex})">
+
+                    Delete
+
+                </button>
+
+            </td>
+
+        </tr>
+
+        `;
 
     }
 
