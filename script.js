@@ -28,6 +28,17 @@ form.addEventListener("submit", function(event){
 
     };
 
+    const search = document.getElementById("search");
+
+    const filterCategory = document.getElementById("filterCategory");
+
+    search.addEventListener("input", displayExpenses);
+
+    filterCategory.addEventListener(
+        "change",
+        displayExpenses
+    );
+
     if(editingIndex === -1){
 
         expenses.push(expense);
@@ -58,37 +69,69 @@ function displayExpenses(){
 
     let sum = 0;
 
+    const searchText =
+    search.value.toLowerCase();
+
+    const selectedCategory =
+    filterCategory.value;
+
     for(let i = 0; i < expenses.length; i++){
 
-        sum += expenses[i].amount;
+        const expense = expenses[i];
 
-        table.innerHTML += `
-        <tr>
+        const matchesSearch =
+        expense.description
+        .toLowerCase()
+        .includes(searchText);
 
-            <td>${expenses[i].date}</td>
+        const matchesCategory =
 
-            <td>${expenses[i].category}</td>
+        selectedCategory === "All" ||
 
-            <td>${expenses[i].description}</td>
+        expense.category === selectedCategory;
 
-            <td>$${expenses[i].amount.toFixed(2)}</td>
+        if(matchesSearch && matchesCategory){
 
-            <td>
-                <button onclick="editExpense(${i})">
-                    Edit
-                </button>
+            sum += expense.amount;
 
-                <button onclick="deleteExpense(${i})">
-                    Delete
-                </button>
-            </td>
+            table.innerHTML += `
 
-        </tr>
-        `;
+            <tr>
+
+                <td>${expense.date}</td>
+
+                <td>${expense.category}</td>
+
+                <td>${expense.description}</td>
+
+                <td>$${expense.amount.toFixed(2)}</td>
+
+                <td>
+
+                    <button onclick="editExpense(${i})">
+
+                        Edit
+
+                    </button>
+
+                    <button onclick="deleteExpense(${i})">
+
+                        Delete
+
+                    </button>
+
+                </td>
+
+            </tr>
+
+            `;
+
+        }
 
     }
 
-    total.textContent = "$" + sum.toFixed(2);
+    total.textContent =
+    "$" + sum.toFixed(2);
 
 }
 

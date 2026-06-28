@@ -158,3 +158,25 @@ td button:hover{
     background:#dc2626;
 
 }
+
+.filters{
+
+    display:flex;
+
+    gap:20px;
+
+    margin-bottom:20px;
+
+}
+
+.filters input{
+
+    flex:2;
+
+}
+
+.filters select{
+
+    flex:1;
+
+}
