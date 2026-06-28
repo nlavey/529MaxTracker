@@ -4,7 +4,11 @@ const table = document.getElementById("expenseTable");
 
 const total = document.getElementById("total");
 
+const submitButton = document.getElementById("submitButton");
+
 let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+
+let editingIndex = -1;
 
 displayExpenses();
 
@@ -24,7 +28,21 @@ form.addEventListener("submit", function(event){
 
     };
 
-    expenses.push(expense);
+    if(editingIndex === -1){
+
+        expenses.push(expense);
+
+    }
+
+    else{
+
+        expenses[editingIndex] = expense;
+
+        editingIndex = -1;
+
+        submitButton.textContent = "Add Expense";
+
+    }
 
     saveExpenses();
 
@@ -56,8 +74,12 @@ function displayExpenses(){
             <td>$${expenses[i].amount.toFixed(2)}</td>
 
             <td>
+                <button onclick="editExpense(${i})">
+                    Edit
+                </button>
+
                 <button onclick="deleteExpense(${i})">
-                X
+                    Delete
                 </button>
             </td>
 
@@ -70,9 +92,39 @@ function displayExpenses(){
 
 }
 
+function editExpense(index){
+
+    document.getElementById("date").value =
+    expenses[index].date;
+
+    document.getElementById("category").value =
+    expenses[index].category;
+
+    document.getElementById("description").value =
+    expenses[index].description;
+
+    document.getElementById("amount").value =
+    expenses[index].amount;
+
+    editingIndex = index;
+
+    submitButton.textContent = "Save Changes";
+
+}
+
 function deleteExpense(index){
 
     expenses.splice(index,1);
+
+    if(editingIndex === index){
+
+        editingIndex = -1;
+
+        form.reset();
+
+        submitButton.textContent = "Add Expense";
+
+    }
 
     saveExpenses();
 
