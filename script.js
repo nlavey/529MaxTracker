@@ -181,7 +181,7 @@ function displayExpenses(){
             ${expense.receipt ?
 
             
-            `<span class="receipt-link" onclick="viewReceipt(${originalIndex})">🧾</span>`
+            `<button class="receipt-link" onclick="viewReceipt(${originalIndex})">🧾</button>`
 
             :
 

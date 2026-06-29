@@ -200,3 +200,17 @@ input[type="file"]{
     padding:8px;
 
 }
+
+.receipt-link {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+    font-size: 22px;
+    border: none;
+    cursor: pointer;
+}
+
+.receipt-link:hover {
+    background: transparent;
+    opacity: .7;
+}
