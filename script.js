@@ -12,6 +12,8 @@ let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
 
 let editingIndex = -1;
 
+let receiptImage = "";
+
 displayExpenses();
 
 form.addEventListener("submit", function(event){
@@ -26,7 +28,9 @@ form.addEventListener("submit", function(event){
 
         description: document.getElementById("description").value,
 
-        amount: Number(document.getElementById("amount").value)
+        amount: Number(document.getElementById("amount").value),
+
+        receipt: receiptImage
 
     };
 
@@ -39,6 +43,11 @@ form.addEventListener("submit", function(event){
     filterCategory.addEventListener(
         "change",
         displayExpenses
+    );
+
+    document.getElementById("receipt").addEventListener(
+        "change",
+        loadReceipt
     );
 
     if(editingIndex === -1){
@@ -61,6 +70,8 @@ form.addEventListener("submit", function(event){
 
     form.reset();
 
+    receiptImage = "";
+
     displayExpenses();
 
 });
@@ -82,10 +93,8 @@ function displayExpenses(){
     const selectedCategory =
     filterCategory.value;
 
-    // Copy the array
     let filteredExpenses = [...expenses];
 
-    // Search
     filteredExpenses = filteredExpenses.filter(function(expense){
 
         const matchesSearch =
@@ -101,12 +110,9 @@ function displayExpenses(){
 
         expense.category === selectedCategory;
 
-        return matchesSearch &&
-               matchesCategory;
+        return matchesSearch && matchesCategory;
 
     });
-
-    // Sorting
 
     switch(sortOption.value){
 
@@ -114,8 +120,7 @@ function displayExpenses(){
 
             filteredExpenses.sort(function(a,b){
 
-                return new Date(b.date)
-                     - new Date(a.date);
+                return new Date(b.date) - new Date(a.date);
 
             });
 
@@ -125,8 +130,7 @@ function displayExpenses(){
 
             filteredExpenses.sort(function(a,b){
 
-                return new Date(a.date)
-                     - new Date(b.date);
+                return new Date(a.date) - new Date(b.date);
 
             });
 
@@ -158,8 +162,7 @@ function displayExpenses(){
 
         sum += expense.amount;
 
-        const originalIndex =
-        expenses.indexOf(expense);
+        const originalIndex = expenses.indexOf(expense);
 
         table.innerHTML += `
 
@@ -175,17 +178,32 @@ function displayExpenses(){
 
             <td>
 
-                <button onclick="editExpense(${originalIndex})">
+            ${expense.receipt ?
 
-                    Edit
+            
+            `<span class="receipt-link" onclick="viewReceipt(${originalIndex})">🧾</span>`
 
-                </button>
+            :
 
-                <button onclick="deleteExpense(${originalIndex})">
+            ""
 
-                    Delete
+            }
 
-                </button>
+            </td>
+
+            <td>
+
+            <button onclick="editExpense(${originalIndex})">
+
+            Edit
+
+            </button>
+
+            <button onclick="deleteExpense(${originalIndex})">
+
+            Delete
+
+            </button>
 
             </td>
 
@@ -197,6 +215,35 @@ function displayExpenses(){
 
     total.textContent =
     "$" + sum.toFixed(2);
+
+}
+
+function viewReceipt(index) {
+    const win = window.open("", "_blank");
+    win.document.write(`<img src="${expenses[index].receipt}" style="max-width:100%">`);
+}
+
+function loadReceipt(event){
+
+    const file = event.target.files[0];
+
+    if(!file){
+
+        receiptImage = "";
+
+        return;
+
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function(){
+
+        receiptImage = reader.result;
+
+    };
+
+    reader.readAsDataURL(file);
 
 }
 
@@ -213,6 +260,9 @@ function editExpense(index){
 
     document.getElementById("amount").value =
     expenses[index].amount;
+
+    receiptImage =
+    expenses[index].receipt;
 
     editingIndex = index;
 

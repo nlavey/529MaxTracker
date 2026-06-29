@@ -180,3 +180,23 @@ td button:hover{
     flex:1;
 
 }
+
+.receipt-link{
+
+    text-decoration:none;
+
+    font-size:22px;
+
+}
+
+.receipt-link:hover{
+
+    opacity:.7;
+
+}
+
+input[type="file"]{
+
+    padding:8px;
+
+}
