@@ -4,6 +4,20 @@ async function scanReceipt(file){
 
     const status = document.getElementById("ocrStatus");
 
+    if(!status){
+
+        return;
+
+    }
+
+    if(!file){
+
+        status.textContent = "No receipt selected.";
+
+        return;
+
+    }
+
     status.textContent = "Scanning receipt...";
 
     const formData = new FormData();
@@ -33,13 +47,25 @@ async function scanReceipt(file){
             }
         );
 
+        if(!response.ok){
+
+            throw new Error(`OCR request failed: ${response.status}`);
+
+        }
+
         const data = await response.json();
 
-        console.log(data);
+        const text = data?.ParsedResults?.[0]?.ParsedText?.trim() || "";
 
-        const text = data.ParsedResults[0].ParsedText;
+        if(!text){
 
-        console.log(text);
+            status.textContent = "No text found in receipt.";
+
+            return;
+
+        }
+
+        console.log("OCR text:", text);
 
         fillExpenseForm(text);
 
@@ -51,7 +77,7 @@ async function scanReceipt(file){
 
         console.error(error);
 
-        status.textContent = "OCR failed.";
+        status.textContent = "OCR failed. Please try another image.";
 
     }
 
@@ -59,26 +85,78 @@ async function scanReceipt(file){
 
 function fillExpenseForm(text){
 
-    const amountMatch = text.match(/\d+\.\d{2}/);
+    const normalizedText = text.replace(/\r/g, "\n");
+
+    const amountMatch =
+        normalizedText.match(/(?:total|amount|subtotal|balance|due)[^\n\r]{0,20}(\$?\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{2})|\d+(?:[.,]\d{2}))/i)
+        || normalizedText.match(/\b(?:\$)?\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{2})\b/);
 
     if(amountMatch){
 
+        const rawAmount = amountMatch[1] || amountMatch[0];
+
+        const cleanedAmount = rawAmount.replace(/[$,]/g, "");
+
         document.getElementById("amount").value =
-        amountMatch[0];
+            Number(cleanedAmount).toFixed(2);
 
     }
 
-    const dateMatch = text.match(/\d{2}\/\d{2}\/\d{4}/);
+    const dateMatch =
+        normalizedText.match(/\b(\d{4})-(\d{2})-(\d{2})\b/)
+        || normalizedText.match(/\b(\d{2})[/-](\d{2})[/-](\d{4})\b/)
+        || normalizedText.match(/\b([A-Za-z]{3,9})\s+(\d{1,2}),\s*(\d{4})\b/);
 
     if(dateMatch){
 
-        const parts =
-        dateMatch[0].split("/");
+        if(dateMatch[1].length === 4){
 
-        document.getElementById("date").value =
+            document.getElementById("date").value =
+                `${dateMatch[1]}-${dateMatch[2]}-${dateMatch[3]}`;
 
-        `${parts[2]}-${parts[0]}-${parts[1]}`;
+        }
+
+        else{
+
+            const day = dateMatch[1];
+
+            const month = dateMatch[2];
+
+            const year = dateMatch[3];
+
+            const isDayFirst = Number(day) > 12;
+
+            const formattedDay = isDayFirst ? day : month;
+
+            const formattedMonth = isDayFirst ? month : day;
+
+            document.getElementById("date").value =
+                `${year}-${formattedMonth.padStart(2, "0")}-${formattedDay.padStart(2, "0")}`;
+
+        }
 
     }
 
 }
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    const receiptInput = document.getElementById("receipt");
+
+    if(receiptInput){
+
+        receiptInput.addEventListener("change", function(event){
+
+            const file = event.target.files?.[0];
+
+            if(file){
+
+                scanReceipt(file);
+
+            }
+
+        });
+
+    }
+
+});
