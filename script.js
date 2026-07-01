@@ -8,11 +8,25 @@ const submitButton = document.getElementById("submitButton");
 
 const sortOption = document.getElementById("sortOption");
 
+const search = document.getElementById("search");
+
+const filterCategory = document.getElementById("filterCategory");
+
+const receiptInput = document.getElementById("receipt");
+
 let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
 
 let editingIndex = -1;
 
 let receiptImage = "";
+
+search.addEventListener("input", displayExpenses);
+
+filterCategory.addEventListener("change", displayExpenses);
+
+receiptInput.addEventListener("change", loadReceipt);
+
+sortOption.addEventListener("change", displayExpenses);
 
 displayExpenses();
 
@@ -33,22 +47,6 @@ form.addEventListener("submit", function(event){
         receipt: receiptImage
 
     };
-
-    const search = document.getElementById("search");
-
-    const filterCategory = document.getElementById("filterCategory");
-
-    search.addEventListener("input", displayExpenses);
-
-    filterCategory.addEventListener(
-        "change",
-        displayExpenses
-    );
-
-    document.getElementById("receipt").addEventListener(
-        "change",
-        loadReceipt
-    );
 
     if(editingIndex === -1){
 
@@ -75,11 +73,6 @@ form.addEventListener("submit", function(event){
     displayExpenses();
 
 });
-
-sortOption.addEventListener(
-    "change",
-    displayExpenses
-);
 
 function displayExpenses(){
 
