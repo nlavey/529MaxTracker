@@ -44,4 +44,38 @@ loginBtn.addEventListener("click", async () => {
 
 });
 
+const status =
+    document.getElementById("userStatus");
+
+onAuthStateChanged(auth, (user)=>{
+
+    if(user){
+
+        status.textContent =
+            "Signed in as " + user.displayName;
+
+        loginBtn.hidden = true;
+        logoutBtn.hidden = false;
+
+    }else{
+
+        status.textContent =
+            "Not signed in";
+
+        loginBtn.hidden = false;
+        logoutBtn.hidden = true;
+
+    }
+
+});
+
+const logoutBtn =
+    document.getElementById("logoutBtn");
+
+logoutBtn.addEventListener("click", ()=>{
+
+    signOut(auth);
+
+});
+
 console.log("Firebase connected!");
