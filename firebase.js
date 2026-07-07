@@ -8,6 +8,16 @@ import {
 }
 from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
+import {
+    getFirestore,
+    collection,
+    addDoc,
+    getDocs,
+    query,
+    where
+}
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
 const firebaseConfig = {
 
     apiKey: "AIzaSyBHuNEFAP-cLupB4CMK4UOx1uoZwa93-2s",
@@ -22,9 +32,13 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
+const db = getFirestore(app);
+
 const auth = getAuth(app);
 
 const provider = new GoogleAuthProvider();
+
+const user = auth.currentUser;
 
 const loginBtn =
     document.getElementById("googleLogin");
@@ -47,15 +61,32 @@ loginBtn.addEventListener("click", async () => {
 const status =
     document.getElementById("userStatus");
 
-onAuthStateChanged(auth, (user)=>{
+onAuthStateChanged(auth, async (user)=>{
 
     if(user){
 
-        status.textContent =
-            "Signed in as " + user.displayName;
+        status.textContent = "Signed in as " + user.displayName;
 
         loginBtn.hidden = true;
         logoutBtn.hidden = false;
+
+        if (!sessionStorage.getItem("firestoreTest")) {
+
+            sessionStorage.setItem("firestoreTest", "true");
+
+            await addDoc(collection(db, "expenses"), {
+
+                uid: user.uid,
+                merchant: "Test Store",
+                amount: 5,
+                category: "Testing",
+                date: new Date()
+
+            });
+
+            console.log("Test document added!");
+
+        }
 
     }else{
 
@@ -79,3 +110,4 @@ logoutBtn.addEventListener("click", ()=>{
 });
 
 console.log("Firebase connected!");
+console.log(db);
