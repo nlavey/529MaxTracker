@@ -87,4 +87,4 @@ logoutBtn.addEventListener("click", ()=>{
 console.log("Firebase connected!");
 console.log(db);
 
-export {auth, db};
+export {auth, db, onAuthStateChanged};

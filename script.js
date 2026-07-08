@@ -5,6 +5,11 @@ import {
     updateExpense
 } from "./firestore.js";
 
+import {
+    auth,
+    onAuthStateChanged
+} from "./firebase.js";
+
 const form = document.getElementById("expenseForm");
 
 const table = document.getElementById("expenseTable");
@@ -21,7 +26,7 @@ const filterCategory = document.getElementById("filterCategory");
 
 const receiptInput = document.getElementById("receipt");
 
-let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+let expenses = [];
 
 let editingIndex = -1;
 
@@ -35,9 +40,27 @@ receiptInput.addEventListener("change", loadReceipt);
 
 sortOption.addEventListener("change", displayExpenses);
 
-displayExpenses();
+onAuthStateChanged(auth, async (user) => {
 
-form.addEventListener("submit", function(event){
+    if(user){
+
+        expenses = await loadExpenses();
+
+        displayExpenses();
+
+    }
+
+    else{
+
+        expenses = [];
+
+        displayExpenses();
+
+    }
+
+});
+
+form.addEventListener("submit", async function(event){
 
     event.preventDefault();
 
@@ -57,25 +80,31 @@ form.addEventListener("submit", function(event){
 
     if(editingIndex === -1){
 
-        expenses.push(expense);
+        await saveExpense(expense);
 
     }
 
     else{
 
-        expenses[editingIndex] = expense;
+    await updateExpense(
 
-        editingIndex = -1;
+        expenses[editingIndex].id,
 
-        submitButton.textContent = "Add Expense";
+        expense
 
-    }
+    );
 
-    saveExpenses();
+    editingIndex = -1;
+
+    submitButton.textContent = "Add Expense";
+
+}
 
     form.reset();
 
     receiptImage = "";
+
+    expenses = await loadExpenses();
 
     displayExpenses();
 
@@ -270,9 +299,13 @@ function editExpense(index){
 
 }
 
-function deleteExpense(index){
+async function deleteExpense(index){
 
-    expenses.splice(index,1);
+    await deleteExpenseFirestore(
+
+        expenses[index].id
+
+    );
 
     if(editingIndex === index){
 
@@ -284,18 +317,9 @@ function deleteExpense(index){
 
     }
 
-    saveExpenses();
+    expenses = await loadExpenses();
 
     displayExpenses();
-
-}
-
-function saveExpenses(){
-
-    localStorage.setItem(
-        "expenses",
-        JSON.stringify(expenses)
-    );
 
 }
 
