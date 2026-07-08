@@ -1,30 +1,100 @@
-import { db, auth } from "./firebase.js";
+import { auth, db } from "./firebase.js";
 
 import {
+
     collection,
-    addDoc
+    addDoc,
+    getDocs,
+    deleteDoc,
+    updateDoc,
+    doc,
+    query,
+    where
+
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
-export async function saveExpense(expense) {
+// Create
+export async function saveExpense(expense){
 
-    if (!auth.currentUser) {
-        throw new Error("User is not signed in.");
+    if(!auth.currentUser){
+
+        throw new Error("User not signed in");
+
     }
 
-    await addDoc(collection(db, "expenses"), {
+    await addDoc(
 
-        uid: auth.currentUser.uid,
+        collection(db,"expenses"),
 
-        date: expense.date,
+        {
 
-        category: expense.category,
+            uid: auth.currentUser.uid,
 
-        description: expense.description,
+            ...expense
 
-        amount: expense.amount,
+        }
 
-        receipt: expense.receipt
+    );
+
+}
+
+// Read
+export async function loadExpenses(){
+
+    if(!auth.currentUser){
+
+        return [];
+
+    }
+
+    const q = query(
+
+        collection(db,"expenses"),
+
+        where("uid","==",auth.currentUser.uid)
+
+    );
+
+    const snapshot = await getDocs(q);
+
+    const expenses=[];
+
+    snapshot.forEach(docSnapshot=>{
+
+        expenses.push({
+
+            id: docSnapshot.id,
+
+            ...docSnapshot.data()
+
+        });
 
     });
+
+    return expenses;
+
+}
+
+// Delete
+export async function deleteExpense(id){
+
+    await deleteDoc(
+
+        doc(db,"expenses",id)
+
+    );
+
+}
+
+// Update
+export async function updateExpense(id,expense){
+
+    await updateDoc(
+
+        doc(db,"expenses",id),
+
+        expense
+
+    );
 
 }
