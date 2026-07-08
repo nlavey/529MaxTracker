@@ -13,7 +13,6 @@ import {
 
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
-// Create
 export async function saveExpense(expense){
 
     if(!auth.currentUser){
@@ -38,7 +37,6 @@ export async function saveExpense(expense){
 
 }
 
-// Read
 export async function loadExpenses(){
 
     if(!auth.currentUser){
@@ -75,7 +73,6 @@ export async function loadExpenses(){
 
 }
 
-// Delete
 export async function deleteExpense(id){
 
     await deleteDoc(
@@ -86,7 +83,6 @@ export async function deleteExpense(id){
 
 }
 
-// Update
 export async function updateExpense(id,expense){
 
     await updateDoc(

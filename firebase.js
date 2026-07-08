@@ -9,12 +9,7 @@ import {
 from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
 import {
-    getFirestore,
-    collection,
-    addDoc,
-    getDocs,
-    query,
-    where
+    getFirestore
 }
 from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
@@ -37,8 +32,6 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 
 const provider = new GoogleAuthProvider();
-
-const user = auth.currentUser;
 
 const loginBtn =
     document.getElementById("googleLogin");
@@ -93,3 +86,5 @@ logoutBtn.addEventListener("click", ()=>{
 
 console.log("Firebase connected!");
 console.log(db);
+
+export {auth, db};
