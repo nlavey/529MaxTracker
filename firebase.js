@@ -70,24 +70,6 @@ onAuthStateChanged(auth, async (user)=>{
         loginBtn.hidden = true;
         logoutBtn.hidden = false;
 
-        if (!sessionStorage.getItem("firestoreTest")) {
-
-            sessionStorage.setItem("firestoreTest", "true");
-
-            await addDoc(collection(db, "expenses"), {
-
-                uid: user.uid,
-                merchant: "Test Store",
-                amount: 5,
-                category: "Testing",
-                date: new Date()
-
-            });
-
-            console.log("Test document added!");
-
-        }
-
     }else{
 
         status.textContent =
