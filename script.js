@@ -1,3 +1,10 @@
+import {
+    saveExpense,
+    loadExpenses,
+    deleteExpense as deleteExpenseFirestore,
+    updateExpense
+} from "./firestore.js";
+
 const form = document.getElementById("expenseForm");
 
 const table = document.getElementById("expenseTable");
@@ -291,3 +298,7 @@ function saveExpenses(){
     );
 
 }
+
+window.editExpense = editExpense;
+window.deleteExpense = deleteExpense;
+window.viewReceipt = viewReceipt;
