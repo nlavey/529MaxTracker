@@ -10,9 +10,27 @@ import {
     onAuthStateChanged
 } from "./firebase.js";
 
+import { generateYearReport } from "./reports.js";
+
 const form = document.getElementById("expenseForm");
 
 const table = document.getElementById("expenseTable");
+
+const yearSelect = document.getElementById("reportYear");
+
+const currentYear = new Date().getFullYear();
+
+for(let year=currentYear; year>=2020; year--){
+
+    const option=document.createElement("option");
+
+    option.value=year;
+
+    option.textContent=year;
+
+    yearSelect.appendChild(option);
+
+}
 
 const total = document.getElementById("total");
 
@@ -32,6 +50,8 @@ let editingIndex = -1;
 
 let receiptImage = "";
 
+let currentUser = null;
+
 search.addEventListener("input", displayExpenses);
 
 filterCategory.addEventListener("change", displayExpenses);
@@ -41,6 +61,8 @@ receiptInput.addEventListener("change", loadReceipt);
 sortOption.addEventListener("change", displayExpenses);
 
 onAuthStateChanged(auth, async (user) => {
+
+    currentUser = user;
 
     if(user){
 
@@ -73,6 +95,8 @@ form.addEventListener("submit", async function(event){
         description: document.getElementById("description").value,
 
         amount: Number(document.getElementById("amount").value),
+
+        qualified: document.getElementById("qualified").checked,
 
         receipt: receiptImage
 
@@ -107,6 +131,34 @@ form.addEventListener("submit", async function(event){
     expenses = await loadExpenses();
 
     displayExpenses();
+
+});
+
+document.getElementById("generateReport")
+.addEventListener("click", async () => {
+
+    if (!currentUser) return;
+
+    const report = await generateYearReport(
+        currentUser.uid,
+        yearSelect.value
+    );
+
+    displayReport(report);
+
+});
+
+document.getElementById("downloadCSV")
+.addEventListener("click", async () => {
+
+    if (!currentUser) return;
+
+    const report = await generateYearReport(
+        currentUser.uid,
+        yearSelect.value
+    );
+
+    exportCSV(report);
 
 });
 
@@ -206,6 +258,10 @@ function displayExpenses(){
             <td>$${expense.amount.toFixed(2)}</td>
 
             <td>
+                ${expense.qualified ? "✅ Qualified" : "❌ Unqualified"}
+            </td>
+
+            <td>
 
             ${expense.receipt ?
 
@@ -290,6 +346,9 @@ function editExpense(index){
     document.getElementById("amount").value =
     expenses[index].amount;
 
+    document.getElementById("qualified").checked =
+    expenses[index].qualified;
+
     receiptImage =
     expenses[index].receipt;
 
@@ -320,6 +379,89 @@ async function deleteExpense(index){
     expenses = await loadExpenses();
 
     displayExpenses();
+
+}
+
+function displayReport(report){
+
+    const output=document.getElementById("reportOutput");
+
+    let html="";
+
+    html+=`
+    <h3>Year Summary</h3>
+
+    <p>
+    Qualified Expenses:
+    $${report.qualified.toFixed(2)}
+    </p>
+
+    <p>
+    Non-Qualified Expenses:
+    $${report.nonQualified.toFixed(2)}
+    </p>
+
+    <p>
+    Total:
+    $${(report.qualified+report.nonQualified).toFixed(2)}
+    </p>
+
+    <h3>Category Totals</h3>
+    `;
+
+    html+="<ul>";
+
+    for(const category in report.categoryTotals){
+
+        html+=`
+        <li>
+        ${category}
+        :
+        $${report.categoryTotals[category].toFixed(2)}
+        </li>
+        `;
+
+    }
+
+    html+="</ul>";
+
+    output.innerHTML=html;
+
+}
+
+function exportCSV(report){
+
+    let csv="Category,Total\n";
+
+    for(const category in report.categoryTotals){
+
+        csv+=`${category},${report.categoryTotals[category]}\n`;
+
+    }
+
+    csv+=`\n`;
+
+    csv+=`Qualified,${report.qualified}\n`;
+
+    csv+=`Non Qualified,${report.nonQualified}\n`;
+
+    csv+=`Overall,${report.qualified+report.nonQualified}`;
+
+    const blob=new Blob([csv],{
+
+        type:"text/csv"
+
+    });
+
+    const url=URL.createObjectURL(blob);
+
+    const a=document.createElement("a");
+
+    a.href=url;
+
+    a.download="529-report.csv";
+
+    a.click();
 
 }
 

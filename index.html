@@ -66,6 +66,14 @@
 
     <button id="submitButton">Add Expense</button>
 
+    <label>
+
+    <input type="checkbox" id="qualified" checked>
+
+    Qualified 529 Expense
+
+    </label>
+
 </form>
 
 <h2>Total:
@@ -115,6 +123,7 @@
 <th>Category</th>
 <th>Description</th>
 <th>Amount</th>
+<th>Qualified</th>
 <th>Receipt</th>
 <th>Actions</th>
 
@@ -127,6 +136,27 @@
 </tbody>
 
 </table>
+
+<hr>
+
+<h2>529 Reports</h2>
+
+<label>
+Select Year:
+</label>
+
+<select id="reportYear">
+</select>
+
+<button id="generateReport">
+Generate Report
+</button>
+
+<button id="downloadCSV">
+Download CSV
+</button>
+
+<div id="reportOutput"></div>
 
 <script type="module" src="script.js"></script>
 <script src="ocr.js"></script>
