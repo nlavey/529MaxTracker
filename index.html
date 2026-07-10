@@ -6,6 +6,7 @@
     <title>529 Expense Tracker</title>
 
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -158,9 +159,101 @@ Download CSV
 
 <div id="reportOutput"></div>
 
-<script type="module" src="script.js"></script>
-<script src="ocr.js"></script>
+<hr>
+
+<section id="dashboard">
+
+    <h2>Analytics Dashboard</h2>
+
+    <div class="dashboard-cards">
+
+        <div class="dashboard-card">
+            <h3>Total Spending</h3>
+            <p id="totalSpending">$0.00</p>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>Qualified</h3>
+            <p id="qualifiedTotal">$0.00</p>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>Unqualified</h3>
+            <p id="unqualifiedTotal">$0.00</p>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>Expenses</h3>
+            <p id="expenseCount">0</p>
+        </div>
+
+    </div>
+
+</section>
+
+<section id="charts">
+
+    <div class="chart-container">
+
+        <div class="chart-card">
+
+            <h3>Monthly Spending</h3>
+
+            <canvas id="monthlyChart"></canvas>
+
+        </div>
+
+        <div class="chart-card">
+
+            <h3>Category Breakdown</h3>
+
+            <canvas id="categoryChart"></canvas>
+
+        </div>
+
+        <div class="chart-card">
+
+            <h3>Qualified vs Unqualified</h3>
+
+            <canvas id="qualifiedChart"></canvas>
+
+        </div>
+
+    </div>
+
+</section>
+
+<section id="budgetDashboard">
+
+    <h2>Education Budget</h2>
+
+    <div class="budget-box">
+
+        <div class="budget-header">
+
+            <span>Annual Budget</span>
+
+            <span id="budgetText">$0 / $10,000</span>
+
+        </div>
+
+        <progress
+            id="budgetProgress"
+            value="0"
+            max="100">
+        </progress>
+
+    </div>
+
+</section>
+
 <script type="module" src="firebase.js"></script>
+<script type="module" src="firestore.js"></script>
+<script src="ocr.js"></script>
+<script type="module" src="reports.js"></script>
+<script type="module" src="analytics.js"></script>
+<script type="module" src="charts.js"></script>
+<script type="module" src="script.js"></script>
 
 </body>
 

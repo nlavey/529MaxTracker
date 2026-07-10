@@ -214,3 +214,111 @@ input[type="file"]{
     background: transparent;
     opacity: .7;
 }
+
+.dashboard-cards{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(auto-fit,minmax(220px,1fr));
+
+    gap:20px;
+
+    margin-top:20px;
+
+}
+
+.dashboard-card{
+
+    background:white;
+
+    padding:20px;
+
+    border-radius:12px;
+
+    box-shadow:0 2px 8px rgba(0,0,0,.1);
+
+    text-align:center;
+
+}
+
+.dashboard-card h3{
+
+    margin-bottom:10px;
+
+}
+
+.dashboard-card p{
+
+    font-size:28px;
+
+    font-weight:bold;
+
+    color:#2c7a7b;
+
+}
+
+.chart-container{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(auto-fit,minmax(350px,1fr));
+
+    gap:25px;
+
+    margin-top:30px;
+
+}
+
+.chart-card{
+
+    background:white;
+
+    padding:20px;
+
+    border-radius:12px;
+
+    box-shadow:0 2px 8px rgba(0,0,0,.1);
+
+}
+
+.chart-card canvas{
+
+    width:100% !important;
+
+    height:320px !important;
+
+}
+
+.budget-box{
+
+    background:white;
+
+    margin-top:30px;
+
+    padding:25px;
+
+    border-radius:12px;
+
+    box-shadow:0 2px 8px rgba(0,0,0,.1);
+
+}
+
+.budget-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    margin-bottom:15px;
+
+}
+
+progress{
+
+    width:100%;
+
+    height:25px;
+
+}
