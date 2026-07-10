@@ -10,6 +10,14 @@ import {
     onAuthStateChanged
 } from "./firebase.js";
 
+import {
+    calculateAnalytics
+} from "./analytics.js";
+
+import {
+    updateCharts
+} from "./charts.js";
+
 import { generateYearReport } from "./reports.js";
 
 const form = document.getElementById("expenseForm");
@@ -17,6 +25,15 @@ const form = document.getElementById("expenseForm");
 const table = document.getElementById("expenseTable");
 
 const yearSelect = document.getElementById("reportYear");
+
+yearSelect.addEventListener("change", () => {
+
+    const selectedYear =
+        Number(yearSelect.value);
+
+    updateDashboard(selectedYear);
+
+});
 
 const currentYear = new Date().getFullYear();
 
@@ -69,6 +86,7 @@ onAuthStateChanged(auth, async (user) => {
         expenses = await loadExpenses();
 
         displayExpenses();
+        updateDashboard();
 
     }
 
@@ -77,6 +95,7 @@ onAuthStateChanged(auth, async (user) => {
         expenses = [];
 
         displayExpenses();
+        updateDashboard();
 
     }
 
@@ -131,6 +150,7 @@ form.addEventListener("submit", async function(event){
     expenses = await loadExpenses();
 
     displayExpenses();
+    updateDashboard();
 
 });
 
@@ -303,6 +323,62 @@ function displayExpenses(){
 
 }
 
+function updateDashboard(year = null){
+
+    const analytics =
+        calculateAnalytics(expenses, year);
+
+    document.getElementById("totalSpending")
+        .textContent =
+        "$" + analytics.total.toFixed(2);
+
+    document.getElementById("qualifiedTotal")
+        .textContent =
+        "$" + analytics.qualified.toFixed(2);
+
+    document.getElementById("unqualifiedTotal")
+        .textContent =
+        "$" + analytics.unqualified.toFixed(2);
+
+    document.getElementById("expenseCount")
+        .textContent =
+        analytics.expenseCount;
+
+    document.getElementById("budgetText")
+        .textContent =
+        "$" +
+        analytics.total.toFixed(2)
+        +
+        " / $"
+        +
+        analytics.budget.toLocaleString();
+
+    const progress =
+    document.getElementById("budgetProgress");
+
+    progress.value =
+        analytics.budgetPercent;
+
+    if (analytics.budgetPercent >= 90) {
+
+        progress.className = "danger";
+
+    }
+    else if (analytics.budgetPercent >= 75) {
+
+        progress.className = "warning";
+
+    }
+    else {
+
+        progress.className = "good";
+
+    }
+
+    updateCharts(expenses, year);
+
+}
+
 function viewReceipt(index) {
     const win = window.open("", "_blank");
     win.document.write(`<img src="${expenses[index].receipt}" style="max-width:100%">`);
@@ -379,6 +455,7 @@ async function deleteExpense(index){
     expenses = await loadExpenses();
 
     displayExpenses();
+    updateDashboard();
 
 }
 
