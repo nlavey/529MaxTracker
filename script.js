@@ -18,6 +18,11 @@ import {
     updateCharts
 } from "./charts.js";
 
+import {
+    getAnnualBudget,
+    setAnnualBudget
+} from "./analytics.js";
+
 import { generateYearReport } from "./reports.js";
 
 const form = document.getElementById("expenseForm");
@@ -165,6 +170,31 @@ document.getElementById("generateReport")
     );
 
     displayReport(report);
+
+});
+
+const budgetInput =
+    document.getElementById("annualBudget");
+
+const saveBudgetBtn =
+    document.getElementById("saveBudget");
+
+budgetInput.value = getAnnualBudget();
+
+saveBudgetBtn.addEventListener("click", () => {
+
+    const newBudget = Number(budgetInput.value);
+
+    if (Number.isNaN(newBudget)) return;
+
+    setAnnualBudget(newBudget);
+    budgetInput.value = getAnnualBudget();
+
+    const selectedYear = yearSelect.value
+        ? Number(yearSelect.value)
+        : null;
+
+    updateDashboard(selectedYear);
 
 });
 

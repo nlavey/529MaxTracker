@@ -15,7 +15,9 @@ const MONTHS = [
     "Dec"
 ];
 
-const DEFAULT_BUDGET = 10000;
+let annualBudget = Number(
+    localStorage.getItem("annualBudget")
+) || 10000;
 
 export function calculateAnalytics(expenses, year = null){
 
@@ -33,7 +35,7 @@ export function calculateAnalytics(expenses, year = null){
 
         monthlyTotals: Array(12).fill(0),
 
-        budget: DEFAULT_BUDGET,
+        budget: annualBudget,
 
         budgetUsed: 0,
 
@@ -141,5 +143,22 @@ export function getQualifiedChartData(analytics){
         ]
 
     };
+
+}
+
+export function getAnnualBudget(){
+
+    return annualBudget;
+
+}
+
+export function setAnnualBudget(budget){
+
+    annualBudget = Number(budget);
+
+    localStorage.setItem(
+        "annualBudget",
+        annualBudget
+    );
 
 }
